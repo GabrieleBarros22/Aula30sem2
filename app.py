@@ -1,33 +1,28 @@
-from flask import Flask, request, make_response, redirect, abort;
-app = Flask(__name__);
+from flask import Flask, request, make_response, redirect, abort, render_template
 
+app = Flask(__name__)
+
+# Página inicial (Home)
 @app.route('/')
 def index():
-    return '<h1>teste</h1>';
+    return render_template('index.html')
 
-@app.route('/user/<name>')
-def user(name):
-    return '<h1>Hello, {}!</h1>'.format(name);
+# Página de Identificação
+@app.route('/identificacao')
+def identificacao():
+    return render_template('identificacao.html')
 
+# Contexto da Requisição
 @app.route('/contextorequisicao')
 def contextorequisicao():
-    user_agent = request.headers.get('User-Agent');
-    return '<p>Your browser is {}</p>'.format(user_agent);
-
-@app.route('/codigostatusdiferente')
-def codigostatusdiferente():
-    return '<p>Bad request</p>', 400;
-
-@app.route('/objetoresposta')
-def objetoresposta():
-    response = make_response('<h1>This document carries a cookie!</h1>');
-    response.set_cookie('answer', '42');
-    return response
+    user_agent = request.headers.get('User-Agent')
+    ip_address = request.remote_addr
+    host = request.host
+    return render_template('contexto.html', user_agent=user_agent, ip_address=ip_address, host=host)
 
 @app.route('/redirecionamento')
 def redirecionamento():
-    return redirect('https://ptb.ifsp.edu.br/');
+    return redirect('https://ptb.ifsp.edu.br/')
 
-@app.route('/abortar')
-def abortar():
-    abort(404);
+if __name__ == '__main__':
+    app.run(debug=True)
